@@ -1,0 +1,20 @@
+{
+  "name": "McFit Ponizovacka",
+  "version": "0.0.0",
+  "homepage": "https://github.com/MarekSalat/McFit-Ponizovacka",
+  "authors": [
+    "Marek Salat <salat.marek42@gmail.com>"
+  ],
+  "description": "Foo",
+  "main": "index.html",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "js/vendor",
+    "test",
+    "tests"
+  ]
+}
