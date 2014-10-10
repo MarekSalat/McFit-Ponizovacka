@@ -14,6 +14,7 @@
 
         <link rel="stylesheet" href="/css/normalize.css">
         <link rel="stylesheet" href="/css/main.css">
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,400italic' rel='stylesheet' type='text/css'>
         <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
 
         <script>
@@ -40,41 +41,57 @@
                     $('#debug').append('\n' + JSON.stringify(JSON.parse(event.data),null,2));
                 }
 
-               $('body').click(function (e){
+               $('#throw').click(function (e){
                    console.log(e);
 
-                    connection.send(JSON.stringify({
-                        type: 'CONTROLLER_CLICK',
-                        event: e.type
-                    }))
+                   var request = {
+                       type: 'CONTROLLER_THROW',
+                       event: e.type
+                   };
+//                   $('#debug').append('\n' + JSON.stringify(request,null,2));
+                   connection.send(JSON.stringify(request));
                });
             })
         </script>
+        <style>
+            * {
+                font-family: 'PT Sans', sans-serif;
+            }
+            .throw {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .throw .message {
+                padding-top: 20%;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 10em;
+            }
+        </style>
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <!-- Add your site or application content here -->
-        <p>Hello world! This is HTML5 Boilerplate.</p>
+        <div class="throw">
+            <!-- Click to start humiliation!!! -->
+            <!-- Throw potato -->
+            <!-- Slap him -->
+            <div class="message">Click to throw</div>
+        </div>
+
+        <div id="throw" class="throw"></div>
 
         <pre id="debug">
         </pre>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="/js/plugins.js"></script>
-        <script src="/js/main.js"></script>
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X');ga('send','pageview');
-        </script>
     </body>
 </html>

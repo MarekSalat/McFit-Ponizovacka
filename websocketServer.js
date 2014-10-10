@@ -2,7 +2,8 @@
 var ws = require("nodejs-websocket");
 
 var I_AM_DISPLAY = 'I_AM_DISPLAY',
-    DISPLAY_CONNECTION_CLOSED = 'DISPLAY_CONNECTION_CLOSED';
+    DISPLAY_CONNECTION_CLOSED = 'DISPLAY_CONNECTION_CLOSED',
+    CONTROLLER_CONNECTION_CLOSE = 'CONTROLLER_CONNECTION_CLOSE';
 
 var displayConnection;
 
@@ -31,7 +32,9 @@ var server = ws.createServer(function (connection) {
 
         // request from controller, pass it to display
         console.log('request from controller, pass it to display |> ' + str);
-        displayConnection.sendText(str);
+        var obj = JSON.parse(str);
+        obj.key = connection.key;
+        displayConnection.sendText(JSON.stringify(obj));
     });
 
     connection.on('close', function () {
@@ -42,7 +45,10 @@ var server = ws.createServer(function (connection) {
             return;
         }
         console.log('controller is closing connection' + connection.key)
-        displayConnection.sendText(connection.key);
+        displayConnection.sendText(JSON.stringify({
+            type: CONTROLLER_CONNECTION_CLOSE,
+            key: connection.key
+        }));
     });
 });
 server.listen(8081);
