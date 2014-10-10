@@ -4,18 +4,21 @@
 
 
 var Flyable = (function () {
+    var MAX_SIZE = 150,
+        MIN_SIZE = 10,
+        SPEED = 0.003;
+
     function Flyable(stage, renderer, $window, path, onAnimationEnd) {
         this.stage = stage;
         this.renderer = renderer;
         this.$window = $window;
         this.path = path;
         this.onAnimationEnd = onAnimationEnd;
-        this.state = 'ONMYWAY'
         this.position = {
             x: this.path.start.x,
-            y: this.path.start.y
+            y: this.path.start.y-MAX_SIZE
         };
-        this.speed = 0.0001;
+        this.speed = SPEED;
         this.t = 0;
         this.graphics = new PIXI.Graphics();
 
@@ -23,22 +26,22 @@ var Flyable = (function () {
     }
 
     Flyable.prototype.render = function (delta) {
-        if(!this.state)
-            return;
 
         this.graphics.clear();
 
         this.t += this.speed*delta;
+        this.t = this.t > 1 ? 1 : this.t;
 
-        if (this.t > 1){
-            this.stage.removeChild(this.graphics);
-            this.state = '';
-        }
+        var u = {
+            x: this.path.end.x - this.path.start.x,
+            y: this.path.end.y - this.path.start.y
+        };
 
         this.graphics.beginFill(0xf39c12, 0.5);
-        var x = this.path.start.x + this.t*this.path.end.x,
-            y = this.path.start.y + this.t*this.path.end.y;
-        this.graphics.drawCircle(x, y , 10);
+        var x = this.path.start.x + this.t*u.x,
+            y = this.path.start.y + this.t*u.y;
+
+        this.graphics.drawCircle(x, y , (1-this.t)*MAX_SIZE + MIN_SIZE);
     };
     return Flyable;
 })();
@@ -80,15 +83,12 @@ var Game = (function () {
 
         this.flyables = [];
         this.graphics = new PIXI.Graphics()
-        this.stage.addChild(this.graphics);
 
         requestAnimFrame(animate);
     }
 
     Game.prototype.render = function (delta) {
         this.graphics.beginFill(0xf39c12, 0.5);
-        this.graphics.drawCircle(0, 0 , 10);
-        this.graphics.drawCircle(this.$window.innerWidth, 0 , 10);
 
         this.flyables.forEach(function (flyable) {
             if(flyable && flyable.render)
@@ -104,8 +104,8 @@ var Game = (function () {
                 y: _this.$window.innerHeight
             },
             end: {
-                x: _this.$window.innerWidth/2,
-                y: _this.$window.innerHeight*0
+                x: Math.random()*_this.$window.innerWidth,
+                y: Math.random()*_this.$window.innerHeight
             }
         };
 
