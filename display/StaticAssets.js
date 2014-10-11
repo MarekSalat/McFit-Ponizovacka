@@ -26,7 +26,6 @@ var StaticAssets = (function () {
         this.graphics.addChild(castle);
         this.graphics.addChild(this.pillary_graphics);
 
-
         this.stage.addChild(this.graphics);
     }
 
@@ -48,11 +47,11 @@ var StaticAssets = (function () {
 
         pillary_bg.width = w;
         pillary_bg.height = 400;
-        pillary_bg.position = new PIXI.Point(-pillary_bg.width/2, -pillary_bg.height/2);
+        pillary_bg.anchor = new PIXI.Point(0.5, 0.5);
 
         pillary_line.width = w;
         pillary_line.height = 400 * 0.5;
-        pillary_line.position = new PIXI.Point(-pillary_bg.width/2, -pillary_bg.height/2);
+        pillary_line.anchor = new PIXI.Point(0.5, 0.5);
 
         this.pillary_graphics.position = new PIXI.Point(w/2, h/2);
 
