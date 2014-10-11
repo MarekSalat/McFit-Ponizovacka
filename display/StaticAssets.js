@@ -2,9 +2,9 @@
 
 var StaticAssets = (function () {
 
-    var background = new PIXI.TilingSprite(PIXI.Texture.fromImage("/img/components/bg.png"), 0, 0);
-    var pillary_bg = new PIXI.TilingSprite(PIXI.Texture.fromImage("/img/components/pillary_bg.jpg"), 0, 0);
-    var pillary_line = new PIXI.TilingSprite(PIXI.Texture.fromImage("/img/components/pillary_line.png"), 0, 0);
+    var background = new PIXI.Sprite(PIXI.Texture.fromImage("/img/components/bg.png"), 0, 0);
+    var pillary_bg = new PIXI.Sprite(PIXI.Texture.fromImage("/img/components/pillary_bg.jpg"), 0, 0);
+    var pillary_line = new PIXI.Sprite(PIXI.Texture.fromImage("/img/components/pillary_line.png"), 0, 0);
 
     var castle = new PIXI.Sprite(PIXI.Texture.fromImage("/img/components/castle.png"));
     var pillary_holes = new PIXI.Sprite(PIXI.Texture.fromImage("/img/components/pillary_holes.png"));
@@ -14,7 +14,6 @@ var StaticAssets = (function () {
         this.stage = stage;
         this.renderer = renderer;
         this.$window = $window;
-
 
         this.pillary_graphics = new PIXI.DisplayObjectContainer();
         this.pillary_graphics.addChild(pillary_bg);

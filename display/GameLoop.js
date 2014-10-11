@@ -152,7 +152,7 @@ var Game = (function () {
         this.flyablesMask.position.y = $window.innerHeight / 2;
         this.flyablesMask.lineStyle(0);
 
-        this.flyablesContainer.mask = this.flyablesMask;
+//        this.flyablesContainer.mask = this.flyablesMask;
 
         this.stage.addChild(this.flyablesMask);
 
@@ -169,13 +169,13 @@ var Game = (function () {
             if(flyable && flyable.render)
                 flyable.render(delta);
 
-            _this.flyablesMask.clear();
-            _this.flyablesMask.beginFill(0x8bc5ff, 0.4);
-            _this.flyablesMask.moveTo(200, -400);
-            _this.flyablesMask.lineTo(1200 , -400);
-            _this.flyablesMask.lineTo(1200, 400) ;
-            _this.flyablesMask.lineTo(-1200, 400) ;
-            _this.flyablesMask.lineTo(-1200, -400);
+//            _this.flyablesMask.clear();
+//            _this.flyablesMask.beginFill(0x8bc5ff, 0.4);
+//            _this.flyablesMask.moveTo(200, -400);
+//            _this.flyablesMask.lineTo(1200 , -400);
+//            _this.flyablesMask.lineTo(1200, 400) ;
+//            _this.flyablesMask.lineTo(-1200, 400) ;
+//            _this.flyablesMask.lineTo(-1200, -400);
         })
     };
 
