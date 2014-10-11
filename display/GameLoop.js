@@ -76,6 +76,13 @@ var Flyable = (function () {
             return;
         }
         if(this.state === 'smudge'){
+            if(this.stage.children.length > 150){
+                this.stage.removeChild(this.sprite);
+                this.state = 'finished';
+            }
+            return;
+        }
+        if(this.state === 'finished'){
             return;
         }
 
@@ -175,8 +182,8 @@ var Game = (function () {
                 y: _this.$window.innerHeight
             },
             end: {
-                x: data.pageX || Math.random()*_this.$window.innerWidth,
-                y: data.pageY || Math.random()*_this.$window.innerHeight
+                x: data.pageX || data.event.normX*_this.$window.innerWidth,
+                y: data.pageY || data.event.normY*_this.$window.innerHeight
             }
         };
 
