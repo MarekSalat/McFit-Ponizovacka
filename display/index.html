@@ -87,29 +87,32 @@
             position: fixed;
             left: 0;
             right: 0;
-            bottom: 7em;
+            bottom: 5em;
 
             margin: 0 auto;
             width: 10em;
-            height: 7em;
-            /*background-color: #b92c28;*/
+            height: 12em;
+            background-color: #b92c28;
+            padding: 0;
         }
 
         #timer * {
-            color: #b92c28;
+            color: #ffffff;
             text-align: center;
+            padding: 0;
+            margin: 0;
         }
 
         #timer h3 {
             padding: 0;
-            padding-top: 0.5em;
             margin: 0;
-            font-size: 1em;
+            font-size: 2em;
         }
 
         #timer p {
             padding: 0;
             margin: 0;
+            margin-top: 0;
             font-size: 8em;
         }
 
@@ -171,7 +174,7 @@
         <div id="overlay" ng-show="idleVisible">
 
             <h1>Humiliate me!</h1>
-            
+
         </div>
 
         <header style="position: fixed; display: block; width: 100%; height: 5em; background-color: #101010; color: #ffffff; padding: 0.5em">
@@ -194,8 +197,8 @@
         </header>
 
         <div id="timer" ng-show="timerVisible">
-
-            <p>{{time}} s</p>
+            <h3>TIME</h3>
+            <p>{{time}}</p>
         </div>
 
 
