@@ -24,8 +24,9 @@ var GameController = (function(){
         this.$scope.players = [];
         this.$scope.throws = 0;
 
-        this.$scope.url = 'http://' + $window.location.hostname + '/controller';
+        this.$scope.url = 'http://' + $window.location.hostname + ':8042/controller';
         this.$scope.time = 30;
+        this.$scope.timerStatus = 'Remain';
         this.$scope.timerVisible = false;
         this.$scope.idleVisible = true;
 
@@ -51,7 +52,7 @@ var GameController = (function(){
 
             _this.game = new Game(_this.$window);
 
-            // fuuuuuuuuujkz fujky
+            // fuuuuuuuuujky fujky
             $('#foo').click(function (e){
                 _this.game.throw(e);
             });
@@ -105,6 +106,12 @@ var GameController = (function(){
         });
     };
 
+    GameController.prototype.resetGame = function () {
+        this.$scope.players.forEach(function (player) {
+            player.score = 0;
+        });
+    };
+
     GameController.prototype.onNewController = function (data) {
         var _this = this;
         console.log(data);
@@ -112,9 +119,10 @@ var GameController = (function(){
             _this.$scope.idleVisible = false;
             _this.$scope.timerVisible = true;
             _this.$scope.time = 30;
-            data.score = 0;
 
+            data.score = 0;
             _this.$scope.players.push(data);
+            _this.resetGame();
         })
     };
 
