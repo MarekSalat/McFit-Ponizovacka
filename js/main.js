@@ -34,6 +34,11 @@ var GameController = (function(){
             _this.connection = connection;
 
             _this.game = new Game(_this.$window);
+
+            // fuuuuuuuuujkz fujky
+            $('#foo').click(function (e){
+                _this.game.throw(e);
+            });
         });
 
         this.messageTypeToFunction = {
