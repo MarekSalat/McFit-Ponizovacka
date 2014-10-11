@@ -110,7 +110,6 @@ var Game = (function () {
 
         // create an new instance of a pixi stage
         this.stage = new PIXI.Stage(0xecf0f1, true);
-        this.stage.setInteractive(false);
 
         // create a renderer instance
         // the 5the parameter is the anti aliasing
@@ -136,21 +135,40 @@ var Game = (function () {
             requestAnimFrame( animate );
         }
 
-        //this.staticAssets = new StaticAssets(this.stage, this.renderer,this.$window);
+        this.staticAssets = new StaticAssets(this.stage, this.renderer,this.$window);
         this.flyables = [];
+        this.flyablesContainer = new PIXI.DisplayObjectContainer();
+        this.stage.addChild(this.flyablesContainer);
+
+        this.flyablesMask = new PIXI.Graphics();
+        this.flyablesMask.position.x = $window.innerWidth / 2;
+        this.flyablesMask.position.y = $window.innerHeight / 2;
+        this.flyablesMask.lineStyle(0);
+
+        this.flyablesContainer.mask = this.flyablesMask;
+
+        this.stage.addChild(this.flyablesMask);
 
         requestAnimFrame(animate);
     }
 
     Game.prototype.render = function (delta) {
 
-        this.graphics.beginFill(0xf39c12, 0.5);
+        var _this = this;
 
-        //this.staticAssets.render(delta);
+        this.staticAssets.render(delta);
 
         this.flyables.forEach(function (flyable) {
             if(flyable && flyable.render)
                 flyable.render(delta);
+
+            _this.flyablesMask.clear();
+            _this.flyablesMask.beginFill(0x8bc5ff, 0.4);
+            _this.flyablesMask.moveTo(200, -400);
+            _this.flyablesMask.lineTo(1200 , -400);
+            _this.flyablesMask.lineTo(1200, 400) ;
+            _this.flyablesMask.lineTo(-1200, 400) ;
+            _this.flyablesMask.lineTo(-1200, -400);
         })
     };
 
@@ -167,7 +185,7 @@ var Game = (function () {
             }
         };
 
-        this.flyables.push(new Flyable(this.stage, this.renderer, this.$window, path), function (flyable) {
+        this.flyables.push(new Flyable(this.flyablesContainer, this.renderer, this.$window, path), function (flyable) {
             _this.flyables.splice(_this.flyables.indexOf(flyable));
         });
     };
