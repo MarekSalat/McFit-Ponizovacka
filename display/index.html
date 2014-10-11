@@ -87,30 +87,33 @@
             position: fixed;
             left: 0;
             right: 0;
-            bottom: 7em;
+            bottom: 5em;
 
             margin: 0 auto;
             width: 10em;
-            height: 7em;
-            /*background-color: #b92c28;*/
+            height: 12em;
+            background-color: #b92c28;
+            padding: 0;
         }
 
         #timer * {
-            color: #b92c28;
+            color: #ffffff;
             text-align: center;
+            padding: 0;
+            margin: 0;
         }
 
         #timer h3 {
             padding: 0;
-            padding-top: 0.5em;
             margin: 0;
-            font-size: 1em;
+            font-size: 2em;
         }
 
         #timer p {
             padding: 0;
             margin: 0;
-            font-size: 4em;
+            margin-top: 0;
+            font-size: 8em;
         }
 
         #overlay {
@@ -138,17 +141,20 @@
             display: inline;
             font-size: 1em;
             font-weight: bold;
+            float: right;
             clear: both;
+            margin-right: 0.5em;
         }
 
         #overlay p {
-            background-color: #b92c28;
-            color: #ffffff;
+
+            text-align: center;
+            color: #000000;
             font-size: 0.3em;
-            margin-right: 1em;
+            margin-top: 2em;
             width: 10em;
-            float: right;
-            padding: 0.2em;
+            float: left;
+
         }
 
         #overlay i {
@@ -167,8 +173,7 @@
     <div data-ng-controller="GameController" class="wrapper" id="foo">
         <div id="overlay" ng-show="idleVisible">
 
-            <h1>Humiliate me!!</h1>
-
+            <h1>Humiliate me!</h1>
 
         </div>
 
@@ -192,14 +197,14 @@
         </header>
 
         <div id="timer" ng-show="timerVisible">
-            <h3>{{timerStatus}}</h3>
+            <h3>TIME</h3>
             <p>{{time}}</p>
         </div>
 
 
 
         <footer style="position: fixed;  bottom: 0; width: 100%; height: 5em; background-color: #101010; color: #ffffff; padding: 0.5em">
-            <span class="col-md-3">Join by visiting at any time </span>
+            <span class="col-md-3"> </span>
             <span id="join-game" class="col-md-4 col-md-offset-1"><a href="{{url}}">{{url}}</a></span>
         </footer>
     </div>
