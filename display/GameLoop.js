@@ -81,6 +81,7 @@ var Game = (function () {
             requestAnimFrame( animate );
         }
 
+        this.staticAssets = new StaticAssets(this.stage, this.renderer,this.$window);
         this.flyables = [];
         this.graphics = new PIXI.Graphics()
 
@@ -89,6 +90,8 @@ var Game = (function () {
 
     Game.prototype.render = function (delta) {
         this.graphics.beginFill(0xf39c12, 0.5);
+
+        this.staticAssets.render(delta);
 
         this.flyables.forEach(function (flyable) {
             if(flyable && flyable.render)
