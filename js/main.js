@@ -7,7 +7,7 @@ underscore.factory('_', function() {
     return window._; // assumes underscore has already been loaded on the page
 });
 
-var gameModule = angular.module('Foo', ['underscore']);
+
 
 var GameController = (function(){
     function GameController($scope, $timeout, $window, _) {
@@ -108,4 +108,80 @@ var GameController = (function(){
     return GameController;
 })();
 
+
+var gameModule = angular.module('Foo', ['underscore', 'angular-gestures']);
+
 gameModule.controller('GameController', ['$scope', '$timeout', '$window', '_', GameController]);
+
+var ControllerController = (function () {
+    function ControllerController($scope, $timeout, $window, _) {
+        var _this = this;
+
+        this.$scope = $scope;
+        this.$timeout = $timeout;
+        this.$window = $window;
+        this.connection = null;
+
+        $window.addEventListener("load", function () {
+            var nickname = 'Foo';//prompt("Choose a nickname");
+            if (!nickname)
+                return;
+
+            _this.connection = new WebSocket("ws://" + window.location.hostname + ":8081");
+            _this.connection.onopen = function () {
+                _this.connection.send(JSON.stringify({
+                    type: 'CONTROLLER_NEW',
+                    nickname: nickname
+                }));
+            };
+            _this.connection.onclose = function () {
+                console.log("Connection closed");
+            };
+            _this.connection.onerror = function () {
+                console.error("Connection error");
+            };
+            _this.connection.onmessage = function (event) {
+                console.log(event.data);
+            };
+
+        });
+
+        this.$scope.isConnectionOpened = function () {
+            return _this.connection && _this.connection.readyState === WebSocket.OPEN
+        };
+
+        this.$scope.throw = function ($event){
+            if(!_this.$scope.isConnectionOpened()) {
+                console.log('connection not opend yet');
+                return;
+            }
+            var endX = $event.gesture.srcEvent.pageX;
+                endY = $event.gesture.srcEvent.pageY;
+
+            console.log($event);
+
+            var e = {
+                normX: endX/_this.$window.innerWidth,
+                normY: endY/_this.$window.innerHeight
+            };
+
+            e.normX = e.normX < 0 ? 0 : e.normX;
+            e.normY = e.normY < 0 ? 0 : e.normY;
+
+            e.normX = e.normX > 1 ? 1 : e.normX;
+            e.normY = e.normY > 1 ? 1 : e.normY;
+
+            var request = {
+                type: 'CONTROLLER_THROW',
+                event: e
+            };
+
+            //console.log(request);
+            _this.connection.send(JSON.stringify(request));
+        };
+    };
+
+    return ControllerController;
+})();
+
+gameModule.controller('ControllerController', ['$scope', '$timeout', '$window', '_', ControllerController]);

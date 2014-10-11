@@ -12,47 +12,18 @@
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <link rel="stylesheet" href="/css/normalize.css">
-        <link rel="stylesheet" href="/css/main.css">
-        <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,400italic' rel='stylesheet' type='text/css'>
         <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="/bower_components/requirejs/require.js"></script>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/angular-gestures/gestures.js"></script>
 
-        <script>
-            var connection;
-            window.addEventListener("load", function () {
-                var nickname = 'Foo';//prompt("Choose a nickname");
-                if (!nickname)
-                    return;
+        <script src="/bower_components/underscore/underscore.js"></script>
 
-                connection = new WebSocket("ws://" + window.location.hostname + ":8081");
-                connection.onopen = function () {
-                    connection.send(JSON.stringify({
-                        type: 'CONTROLLER_NEW',
-                        nickname: nickname
-                    }));
-                };
-                connection.onclose = function () {
-                    console.log("Connection closed");
-                };
-                connection.onerror = function () {
-                    console.error("Connection error");
-                };
-                connection.onmessage = function (event) {
-                    $('#debug').append('\n' + JSON.stringify(JSON.parse(event.data),null,2));
-                };
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
 
-               $('#throw').click(function (e){
-                   console.log(e);
+        <script src="/js/main.js"></script>
 
-                   var request = {
-                       type: 'CONTROLLER_THROW',
-                       event: e.type
-                   };
-//                   $('#debug').append('\n' + JSON.stringify(request,null,2));
-                   connection.send(JSON.stringify(request));
-               });
-            })
-        </script>
         <style>
             * {
                 font-family: 'PT Sans', sans-serif;
@@ -66,32 +37,24 @@
             }
             
             .throw .message {
-                padding-top: 20%;
+                padding-top: 15%;
                 text-align: center;
                 vertical-align: middle;
                 font-size: 10em;
             }
         </style>
     </head>
-    <body>
+    <body ng-app="Foo">
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <div class="throw">
+        <div data-ng-controller="ControllerController" class="throw" data-hm-swipe="throw($event)">
             <!-- Click to start humiliation!!! -->
             <!-- Throw potato -->
             <!-- Slap him -->
             <div class="message">Click to throw</div>
         </div>
 
-        <div id="throw" class="throw"></div>
-
-        <pre id="debug">
-        </pre>
-
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
-        <script src="/js/plugins.js"></script>
     </body>
 </html>
