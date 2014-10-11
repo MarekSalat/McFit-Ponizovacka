@@ -38,6 +38,7 @@ var StaticAssets = (function () {
         background.height = h;
 
         castle.position.x = 100;
+        castle.position.y = 50;
 
         sinner.scale = new PIXI.Point(0.8, 0.8);
         sinner.anchor = new PIXI.Point(0.5, 0.5);
