@@ -25,7 +25,7 @@ var Flyable = (function () {
             normal: new PIXI.Sprite(potatoTexture),
             smashed: new PIXI.Sprite(potatoSmashedTextture),
             smudge: new PIXI.Sprite(potatoSmudgeTexture)
-        }
+        };
         this.sprite = this.potatoSprites.normal;// create a new Sprite using the texture
 
         // center the sprites anchor point
@@ -109,6 +109,42 @@ var Flyable = (function () {
 })();
 
 
+var Label = (function () {
+    function Label(stage, renderer, $window, position, score) {
+        this.stage = stage;
+        this.renderer = renderer;
+        this.$window = $window;
+
+        this.graphics = new PIXI.Text(score, {font:"50px Arial", fill: score < 0 ? "red": "black"});
+        this.graphics.position.x = position.x;
+        this.graphics.position.y = position.y;
+
+        this.stage.addChild(this.graphics);
+        this.t = 0;
+        this.state = 'presenting';
+    }
+
+    Label.prototype.render = function (delta) {
+        if(this.state === 'finished'){
+            return;
+        }
+        this.t += delta;
+        if(this.t > 5000){
+            this.state = 'finished';
+            this.stage.removeChild(this);
+
+            this.graphics.scale.x = 0;
+            this.graphics.scale.y = 0;
+
+            return;
+        }
+        this.graphics.scale.x = this.t/500;
+        this.graphics.scale.y = this.t/500;
+    };
+
+    return Label
+})();
+
 var Game = (function () {
     function Game($window) {
         var _this = this;
@@ -147,6 +183,10 @@ var Game = (function () {
         this.flyablesContainer = new PIXI.DisplayObjectContainer();
         this.stage.addChild(this.flyablesContainer);
 
+        this.labelsContainer = new PIXI.DisplayObjectContainer();
+        this.labels = [];
+        this.stage.addChild(this.labelsContainer);
+
         this.flyablesMask = new PIXI.Graphics();
         this.flyablesMask.position.x = $window.innerWidth / 2;
         this.flyablesMask.position.y = $window.innerHeight / 2;
@@ -176,7 +216,11 @@ var Game = (function () {
 //            _this.flyablesMask.lineTo(1200, 400) ;
 //            _this.flyablesMask.lineTo(-1200, 400) ;
 //            _this.flyablesMask.lineTo(-1200, -400);
-        })
+        });
+
+        this.labels.forEach(function (label) {
+            label.render(delta);
+        });
     };
 
     Game.prototype.throw = function(data){
@@ -195,6 +239,15 @@ var Game = (function () {
         this.flyables.push(new Flyable(this.flyablesContainer, this.renderer, this.$window, path), function (flyable) {
             _this.flyables.splice(_this.flyables.indexOf(flyable));
         });
+        var score = 1/Math.sqrt(
+                Math.pow(path.end.x - _this.$window.innerWidth/2, 2) +
+                Math.pow(path.end.y - _this.$window.innerHeight/2, 2)
+        );
+
+        //this.labels.push(new Label(this.labelsContainer, this.renderer, this.$window, path.end, score));
+
+
+        return score;
     };
 
     return Game;

@@ -54,11 +54,6 @@ var StaticAssets = (function () {
         pillary_line.anchor = new PIXI.Point(0.5, 0.5);
 
         this.pillary_graphics.position = new PIXI.Point(w/2, h/2);
-
-
-
-
-
     };
     return StaticAssets;
 })();

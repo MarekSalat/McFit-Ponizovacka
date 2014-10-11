@@ -46,34 +46,104 @@
             min-height:100%;
             position:relative;
         }
-        
+
+        header {
+            padding:1em;
+            background:#5ee;
+        }
+
         header h3 {
             font-size: 1.0em;
             margin: 0.2em;
             margin-bottom: 0.3em;
             text-align: center;
+            font-weight: bold;
         }
         header p {
             text-align: center;
         }
-        
-        header {
-            padding:10px;
-            background:#5ee;
-        }
-        #game-content {
-            padding:10px;
-            padding-bottom:80px;   /* Height of the footer element */
-            height: 100%;
-        }
+
+
         footer {
             width:100%;
-            height:80px;
+            height:3em;
             position:absolute;
             bottom:0;
             left:0;
             background:#ee5;
         }
+
+        #join-game a{
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #105cb6;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        #timer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 7em;
+
+            margin: 0 auto;
+            width: 10em;
+            height: 7em;
+            background-color: #b92c28;
+        }
+
+        #timer * {
+            color: #ffffff;
+            text-align: center;
+        }
+
+        #timer h3 {
+            padding: 0;
+            padding-top: 0.5em;
+            margin: 0;
+            font-size: 1em;
+        }
+
+        #timer p {
+            padding: 0;
+            margin: 0;
+            font-size: 4em;
+        }
+
+        #overlay {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            display: inline-block;
+            background-color: rgba(0,0,0,0.3);
+            padding-top: 0.5em;
+            text-align: center;
+
+            font-size: 10em;
+
+        }
+
+        #overlay h1, #overlay i {
+            background-color: #b92c28;
+            color: #ffffff;
+            padding: 0.1em;
+        }
+
+        #overlay h1{
+            display: inline;
+            font-size: 1em;
+            font-weight: bold;
+            clear: both;
+        }
+
+        #overlay i {
+            font-size: 1.8em;
+            clear: both;
+        }
+
     </style>
 </head>
 <body ng-app="Foo">
@@ -83,6 +153,14 @@
 <![endif]-->
 
     <div data-ng-controller="GameController" class="wrapper" id="foo">
+        <div id="overlay" ng-show="idleVisible">
+            <p>
+                <h1>Humiliate me!!</h1>
+                <br/>
+                <i class="fa fa-arrow-down"></i>
+            </p>
+        </div>
+
         <header style="position: fixed; display: block; width: 100%; height: 5em; background-color: #101010; color: #ffffff; padding: 0.5em">
             <div class="col-xs-1">
                 <h3>Throws</h3>
@@ -92,18 +170,26 @@
                 <h3>Players</h3>
                 <p>{{players.length}}</p>
             </div>
-            <div class="col-xs-3">
-                <span ng-repeat="player in players">{{player.key}} </span>
+            <div class="col-xs-8">
+                <span ng-repeat="player in players">{{player.key}} [{{player.score*1000 | number:0 }}] </span>
             </div>
 
             <div class="col-xs-1 pull-right">
                 <h3>Total score</h3>
-                <p>{{totalScore}}</p>
+                <p>{{totalScore()*1000 | number: 0}}</p>
             </div>
         </header>
 
+        <div id="timer" ng-show="timerVisible">
+            <h3>Remain</h3>
+            <p>{{time}}</p>
+        </div>
+
+
+
         <footer style="position: fixed;  bottom: 0; width: 100%; height: 5em; background-color: #101010; color: #ffffff; padding: 0.5em">
-            <span>Join by visiting at any time <a href="{{url}}">{{url}}</a></span>
+            <span class="col-md-3">Join by visiting at any time </span>
+            <span id="join-game" class="col-md-4 col-md-offset-1"><a href="{{url}}">{{url}}</a></span>
         </footer>
     </div>
 
