@@ -224,6 +224,8 @@ var Game = (function () {
         this.peopleContainer = new PIXI.DisplayObjectContainer();
         this.stage.addChild(this.peopleContainer);
 
+        this.t = 1000;
+
         requestAnimFrame(animate);
     }
 
@@ -246,8 +248,9 @@ var Game = (function () {
 //            _this.flyablesMask.lineTo(-1200, -400);
         });
 
-
-        if (Math.random() > 0.98) {
+        this.t -= delta;
+        if (this.t < 0 && Math.random() > 0.98) {
+            this.t = 1000;
             var walkingPerson = new WalkingPerson(this.peopleContainer, this.renderer,this.$window);
             this.people.push(walkingPerson);
 
