@@ -46,6 +46,17 @@
             min-height:100%;
             position:relative;
         }
+        
+        header h3 {
+            font-size: 1.0em;
+            margin: 0.2em;
+            margin-bottom: 0.3em;
+            text-align: center;
+        }
+        header p {
+            text-align: center;
+        }
+        
         header {
             padding:10px;
             background:#5ee;
@@ -72,7 +83,28 @@
 <![endif]-->
 
     <div data-ng-controller="GameController" class="wrapper" id="foo">
+        <header style="position: fixed; display: block; width: 100%; height: 5em; background-color: #101010; color: #ffffff; padding: 0.5em">
+            <div class="col-xs-1">
+                <h3>Throws</h3>
+                <p>{{throws}}</p>
+            </div>
+            <div class="col-xs-1">
+                <h3>Players</h3>
+                <p>{{players.length}}</p>
+            </div>
+            <div class="col-xs-3">
+                <span ng-repeat="player in players">{{player.key}} </span>
+            </div>
 
+            <div class="col-xs-1 pull-right">
+                <h3>Total score</h3>
+                <p>{{totalScore}}</p>
+            </div>
+        </header>
+
+        <footer style="position: fixed;  bottom: 0; width: 100%; height: 5em; background-color: #101010; color: #ffffff; padding: 0.5em">
+            <span>Join by visiting at any time <a href="{{url}}">{{url}}</a></span>
+        </footer>
     </div>
 
 

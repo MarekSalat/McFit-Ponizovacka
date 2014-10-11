@@ -22,6 +22,8 @@ var GameController = (function(){
 
         this.$scope.players = [];
         this.$scope.throws = 0;
+        this.$scope.totalScore = 0;
+        this.$scope.url = 'http://' + $window.location.hostname + '/controller';
 
         $window.addEventListener("load", function () {
             var connection = new WebSocket("ws://" + $window.location.hostname + ":8081");
@@ -127,7 +129,7 @@ var ControllerController = (function () {
             if (!nickname)
                 return;
 
-            _this.connection = new WebSocket("ws://" + window.location.hostname + ":8081");
+            _this.connection = new WebSocket("ws://" + $window.location.hostname + ":8081");
             _this.connection.onopen = function () {
                 _this.connection.send(JSON.stringify({
                     type: 'CONTROLLER_NEW',
@@ -146,6 +148,7 @@ var ControllerController = (function () {
 
         });
 
+
         this.$scope.isConnectionOpened = function () {
             return _this.connection && _this.connection.readyState === WebSocket.OPEN
         };
@@ -155,6 +158,7 @@ var ControllerController = (function () {
                 console.log('connection not opend yet');
                 return;
             }
+
             var endX = $event.gesture.srcEvent.pageX;
                 endY = $event.gesture.srcEvent.pageY;
 
@@ -170,6 +174,8 @@ var ControllerController = (function () {
 
             e.normX = e.normX > 1 ? 1 : e.normX;
             e.normY = e.normY > 1 ? 1 : e.normY;
+
+            e.normY = 0.7*e.normY + 0.3;
 
             var request = {
                 type: 'CONTROLLER_THROW',
