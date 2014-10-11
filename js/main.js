@@ -10,12 +10,13 @@ underscore.factory('_', function() {
 
 
 var GameController = (function(){
-    function GameController($scope, $timeout, $window, _) {
+    function GameController($scope, $timeout, $window, _, $interval) {
         var _this = this;
 
         this.$scope = $scope;
         this.$timeout = $timeout;
         this.$window = $window;
+        this.$interval = $interval
         this.connection = null;
         this._ = _;
         this.game = {};
@@ -23,8 +24,23 @@ var GameController = (function(){
         this.$scope.players = [];
         this.$scope.throws = 0;
 
+        this.$scope.url = 'http://' + $window.location.hostname + '/controller';
+        this.$scope.time = 30;
+        this.$scope.timerVisible = false;
+        this.$scope.idleVisible = true;
+
+        this.$scope.totalScore = function (){
+            var score = 0;
+            _this.$scope.players.forEach(function(player){
+                if (player.score){
+                    score += player.score;
+                }
+            });
+            return score;
+        }
+
         $window.addEventListener("load", function () {
-            var connection = new WebSocket("ws://" + $window.location.hostname + ":8081");
+            var connection = new WebSocket("ws://" + $window.location.hostname + ":8043");
 
             connection.onopen = _this.onopen.bind(_this);
             connection.onclose = _this.onclose.bind(_this);
@@ -40,6 +56,20 @@ var GameController = (function(){
                 _this.game.throw(e);
             });
         });
+
+        function updateTime() {
+            _this.$scope.time -= 1;
+            _this.$scope.time = _this.$scope.time < 0 ? 30 : _this.$scope.time;
+        }
+
+
+        this.stopTime = $interval(updateTime, 1000);
+
+        // listen on DOM destroy (removal) event, and cancel the next UI update
+        // to prevent updating time after the DOM element was removed.
+//        this.on('$destroy', function() {
+//            $interval.cancel(_this.stopTime);
+//        });
 
         this.messageTypeToFunction = {
             CONTROLLER_NEW: this.onNewController.bind(_this),
@@ -79,6 +109,11 @@ var GameController = (function(){
         var _this = this;
         console.log(data);
         this.$timeout(function () {
+            _this.$scope.idleVisible = false;
+            _this.$scope.timerVisible = true;
+            _this.$scope.time = 30;
+            data.score = 0;
+
             _this.$scope.players.push(data);
         })
     };
@@ -89,6 +124,11 @@ var GameController = (function(){
 
         this.$timeout(function () {
             _this.$scope.players = _.without(_this.$scope.players, _.findWhere(_this.$scope.players, {key: data.key}));
+
+            if (_this.$scope.players.length <= 0){
+                _this.$scope.idleVisible = true;
+                _this.$scope.timerVisible = false;
+            }
         })
     };
 
@@ -96,12 +136,13 @@ var GameController = (function(){
         var _this = this;
         console.log(data);
 
-        if(!_.findWhere(_this.$scope.players, {key: data.key}))
+        var player = _.findWhere(_this.$scope.players, {key: data.key});
+        if(!player)
             return;
 
         this.$timeout(function () {
             _this.$scope.throws++;
-            _this.game.throw(data);
+            player.score += _this.game.throw(data);
         })
     };
 
@@ -111,7 +152,7 @@ var GameController = (function(){
 
 var gameModule = angular.module('Foo', ['underscore', 'angular-gestures']);
 
-gameModule.controller('GameController', ['$scope', '$timeout', '$window', '_', GameController]);
+gameModule.controller('GameController', ['$scope', '$timeout', '$window', '_', '$interval', GameController]);
 
 var ControllerController = (function () {
     function ControllerController($scope, $timeout, $window, _) {
@@ -127,7 +168,7 @@ var ControllerController = (function () {
             if (!nickname)
                 return;
 
-            _this.connection = new WebSocket("ws://" + window.location.hostname + ":8081");
+            _this.connection = new WebSocket("ws://" + $window.location.hostname + ":8043");
             _this.connection.onopen = function () {
                 _this.connection.send(JSON.stringify({
                     type: 'CONTROLLER_NEW',
@@ -146,6 +187,7 @@ var ControllerController = (function () {
 
         });
 
+
         this.$scope.isConnectionOpened = function () {
             return _this.connection && _this.connection.readyState === WebSocket.OPEN
         };
@@ -155,8 +197,9 @@ var ControllerController = (function () {
                 console.log('connection not opend yet');
                 return;
             }
-            var endX = $event.gesture.srcEvent.pageX;
-                endY = $event.gesture.srcEvent.pageY;
+
+            var endX = $event.gesture.srcEvent.pageX || $event.gesture.srcEvent.targetTouches[0].pageX;
+                endY = $event.gesture.srcEvent.pageY || $event.gesture.srcEvent.targetTouches[0].pageY;
 
             console.log($event);
 
@@ -170,6 +213,8 @@ var ControllerController = (function () {
 
             e.normX = e.normX > 1 ? 1 : e.normX;
             e.normY = e.normY > 1 ? 1 : e.normY;
+
+            e.normY = 0.7*e.normY + 0.3;
 
             var request = {
                 type: 'CONTROLLER_THROW',
