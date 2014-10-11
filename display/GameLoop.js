@@ -12,14 +12,16 @@ var Flyable = (function () {
     var potatoSmashedTextture = PIXI.Texture.fromImage("/img/components/rajce_end.png");
     var potatoSmudgeTexture = PIXI.Texture.fromImage("/img/components/rajce_end2.png");
 
-    function Flyable(stage, renderer, $window, path, onAnimationEnd) {
+    function Flyable(stage, renderer, $window, game, path, onAnimationEnd) {
         this.stage = stage;
         this.renderer = renderer;
         this.$window = $window;
+        this.game = game;
         this.path = path;
         this.speed = SPEED;
         this.t = 0;
         this.state = 'ON_MY_WAY';
+        this.before_half = true;
 
         this.potatoSprites = {
             normal: new PIXI.Sprite(potatoTexture),
@@ -61,6 +63,27 @@ var Flyable = (function () {
 
     Flyable.prototype.render = function (delta) {
         this.t += this.speed*delta;
+
+        var half = this.$window.innerHeight - (this.path.start.y - this.path.end.y)/2;
+
+        if (this.state === 'ON_MY_WAY' && this.before_half && this.sprite.position.y <= half) {
+            this.before_half = false;
+
+            var result = false;
+            var _this = this;
+            this.game.people.forEach(function (person) {
+                if(!result && person && person.render)
+                    result = person.ishit(_this.sprite.position.x, _this.sprite.position.y);
+            });
+
+            if (result) {
+                this.stage.removeChild(this.sprite);
+                this.state = 'finished';
+                console.log("wrong");
+            }
+
+        }
+
         if (this.state === 'ON_MY_WAY' && this.t > 1) {
             this.state = 'smashed';
             this.changeSprite(this.potatoSprites.smashed)
@@ -143,6 +166,7 @@ var Game = (function () {
         }
 
         this.staticAssets = new StaticAssets(this.stage, this.renderer,this.$window);
+
         this.flyables = [];
         this.flyablesContainer = new PIXI.DisplayObjectContainer();
         this.stage.addChild(this.flyablesContainer);
@@ -155,6 +179,10 @@ var Game = (function () {
 //        this.flyablesContainer.mask = this.flyablesMask;
 
         this.stage.addChild(this.flyablesMask);
+
+        this.people = [];
+        this.peopleContainer = new PIXI.DisplayObjectContainer();
+        this.stage.addChild(this.peopleContainer);
 
         requestAnimFrame(animate);
     }
@@ -176,7 +204,20 @@ var Game = (function () {
 //            _this.flyablesMask.lineTo(1200, 400) ;
 //            _this.flyablesMask.lineTo(-1200, 400) ;
 //            _this.flyablesMask.lineTo(-1200, -400);
-        })
+        });
+
+        if (Math.random() > 0.98) {
+            var walkingPerson = new WalkingPerson(this.peopleContainer, this.renderer,this.$window);
+            this.people.push(walkingPerson);
+
+        }
+
+        this.people.forEach(function (person) {
+            if(person && person.render)
+                person.render(delta);
+
+        });
+
     };
 
     Game.prototype.throw = function(data){
@@ -192,7 +233,7 @@ var Game = (function () {
             }
         };
 
-        this.flyables.push(new Flyable(this.flyablesContainer, this.renderer, this.$window, path), function (flyable) {
+        this.flyables.push(new Flyable(this.flyablesContainer, this.renderer, this.$window, this, path), function (flyable) {
             _this.flyables.splice(_this.flyables.indexOf(flyable));
         });
     };
