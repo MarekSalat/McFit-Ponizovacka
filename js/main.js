@@ -29,6 +29,7 @@ var GameController = (function(){
         this.$scope.timerStatus = 'Remain';
         this.$scope.timerVisible = false;
         this.$scope.idleVisible = true;
+        this.$scope.showtable = false;
 
         this.$scope.totalScore = function (){
             var score = 0;
@@ -60,6 +61,31 @@ var GameController = (function(){
 
         function updateTime() {
             _this.$scope.time -= 1;
+
+            if (_this.$scope.showtable && _this.$scope.time > 0){
+                _this.$scope.timerVisible = true;
+                return
+            }
+
+            if (_this.$scope.showtable && _this.$scope.time < 0){
+                _this.$scope.idleVisible = false;
+                _this.$scope.showtable = false;
+                _this.$scope.time = 30;
+                return
+            }
+
+            if(_this.$scope.idleVisible)
+                return;
+
+            if(_this.$scope.time < 0){
+                _this.$scope.idleVisible = true;
+                _this.$scope.timerVisible = true;
+                _this.$scope.showtable = true;
+                _this.$scope.time = 8;
+                _this.resetGame();
+                return;
+            }
+
             _this.$scope.time = _this.$scope.time < 0 ? 30 : _this.$scope.time;
         }
 
