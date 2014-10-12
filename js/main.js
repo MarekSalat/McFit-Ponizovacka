@@ -71,6 +71,7 @@ var GameController = (function(){
                 _this.$scope.idleVisible = false;
                 _this.$scope.showtable = false;
                 _this.$scope.time = 30;
+                _this.resetGame();
                 return
             }
 
@@ -82,7 +83,6 @@ var GameController = (function(){
                 _this.$scope.timerVisible = true;
                 _this.$scope.showtable = true;
                 _this.$scope.time = 8;
-                _this.resetGame();
                 return;
             }
 
@@ -173,11 +173,13 @@ var GameController = (function(){
         var player = _.findWhere(_this.$scope.players, {key: data.key});
         if(!player)
             return;
-
-        this.$timeout(function () {
-            _this.$scope.throws++;
-            player.score += _this.game.throw(data);
-        })
+        if (!_this.$scope.idleVisible){
+	       		this.$timeout(function () {
+	            _this.$scope.throws++;
+	            player.score += _this.game.throw(data);
+	        })
+        }
+        
     };
 
     return GameController;

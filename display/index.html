@@ -162,6 +162,15 @@
             clear: both;
         }
 
+        #results {
+            position: fixed;
+            top: 7em;
+            left: 2em;
+            background-color: black;
+            color: white;
+            font-size: 2em;
+        }
+
     </style>
 </head>
 <body ng-app="Foo">
@@ -175,6 +184,12 @@
 
             <h1>Humiliate me!</h1>
 
+        </div>
+
+        <div id="results" ng-show="showtable">
+            <ol>
+                <li ng-repeat="player in players">{{player.score*1000 | number:0 }}   --> {{player.key}}</li>
+            </ol>
         </div>
 
         <header style="position: fixed; display: block; width: 100%; height: 5em; background-color: #101010; color: #ffffff; padding: 0.5em">
